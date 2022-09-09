@@ -1,0 +1,15 @@
+https://expressjs.com/en/guide/routing.html
+https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
+https://expressjs.com/en/starter/static-files.html
+https://www.npmjs.com/package/express-session
+https://www.programiz.com/javascript/examples/generate-random-strings
+https://www.w3schools.com/jquery/jquery_ajax_get_post.asp
+https://getbootstrap.com/docs/4.0/
+https://stackoverflow.com/questions/10659097/jquery-get-selected-option-from-dropdown
+https://stackoverflow.com/questions/5467129/sort-javascript-object-by-key?page=1&tab=votes#tab-top
+https://www.codegrepper.com/code-examples/javascript/jquery+fade+out+after+5+seconds
+https://sweetalert.js.org/guides/#advanced-examples
+https://stackoverflow.com/questions/1309452/how-to-replace-innerhtml-of-a-div-using-jquery
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+https://stackoverflow.com/questions/11179406/jquery-get-value-of-select-onchange
+https://stackoverflow.com/questions/1309483/redirect-user-to-current-page-with-some-querystring-using-javascript/10235376

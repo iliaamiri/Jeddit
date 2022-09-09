@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Comment <%= comment.id %></title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+    <div class="row mb-3 mt-1 post-container">
+
+
+        <hr>
+        <% if (!user) { %>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <h3 class="display-6">Login or Sign up to leave a comment</h3>
+                </div>
+                <div class="col-md-4">
+                    <a href="/user/login" class="btn btn-primary">Login</a>
+                    <a href="/user/signup" class="btn btn-outline-primary">Sign up</a>
+                </div>
+            </div>
+            <hr>
+        <% } else { %>
+            <div class="row d-flex align-items-center">
+                <div class="col-md-12">
+                    <% if (parentComment === null) { %>
+                        <h3 class="display-6 d-inline">Go to Post <a
+                                    href="/posts/show/<%= post.id %>">#<%= post.id %></a> >
+                        </h3>
+                    <% } else { %>
+                        <h3 class="display-6 d-inline"><a
+                                    href="/posts/show/<%= parentComment.post_id %>">Post #<%= parentComment.post_id %></a> ></h3>
+                        <h3 class="display-6 d-inline">Upper Comment: <a
+                                    href="/comment/show/<%= parentComment.id %>">#<%= parentComment.id %></a> ></h3>
+                    <% } %>
+                    <h3 class="d-inline display-6">Comment: <a
+                                href="/comment/show/<%= comment.id %>">#<%= comment.id %></a></h3>
+                </div>
+            </div>
+            <hr>
+        <% } %>
+
+        <!-- Alert Box -->
+        <div class="alert alert-danger" role="alert" id="errorMessage" style="display: none">
+            This is a primary alert—check it out!
+        </div>
+
+
+        <div class="row post-comment-container-box">
+            <div class="col-md-12 col-sm-12 comment-container-box">
+                <!-- Parent Comment (1st Node) -->
+                <div class="row">
+                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment, isLast: false}) -%>
+
+                    <!-- Children of Root Comment (2nd node) -->
+                    <div class="row">
+                        <div class="offset-for-nested-comments">
+                            <div class="d-flex" style="height: 100%;">
+                                <div class="vr"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-11">
+                            <% for (let childComment of getChildrenOfComment(comment.id)) { %>
+                                <div class="row">
+                                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: childComment, isLast: false}) -%>
+
+                                    <div class="row">
+                                        <div class="offset-for-nested-comments">
+                                            <div class="d-flex" style="height: 100%;">
+                                                <div class="vr"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-11">
+                                            <!-- Children of Level 1 Nest (3rd node) -->
+                                            <% for (let grandChildComment of getChildrenOfComment(childComment.id)) { %>
+                                                <div class="row">
+                                                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandChildComment, isLast: false}) -%>
+
+                                                    <div class="row">
+                                                        <div class="offset-for-nested-comments">
+                                                            <div class="d-flex" style="height: 100%;">
+                                                                <div class="vr"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-11">
+                                                            <% for (let grandGrandChildComment of getChildrenOfComment(grandChildComment.id)) { %>
+                                                                <div class="row">
+                                                                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandGrandChildComment, isLast: false}) -%>
+
+                                                                    <div class="row">
+                                                                        <div class="offset-for-nested-comments">
+                                                                            <div class="d-flex" style="height: 100%;">
+                                                                                <div class="vr"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-11">
+                                                                            <% for (let grandGrandGrandChildComment of getChildrenOfComment(grandGrandChildComment.id)) { %>
+                                                                                <div class="row">
+                                                                                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandGrandGrandChildComment, isLast: false}) -%>
+
+                                                                                    <div class="row">
+                                                                                        <div class="offset-for-nested-comments">
+                                                                                            <div class="d-flex"
+                                                                                                 style="height: 100%;">
+                                                                                                <div class="vr"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="col-md-11">
+                                                                                            <% for (let grandGrandGrandGrandChildComment of getChildrenOfComment(grandGrandGrandChildComment.id)) { %>
+                                                                                                <div class="row">
+                                                                                                    <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandGrandGrandGrandChildComment, isLast: true}) -%>
+
+                                                                                                    <div class="row d-flex justify-content-end">
+                                                                                                        <div class="col-md-10 col-xs-12">
+                                                                                                            <a href="/comment/show/<%= grandGrandGrandChildComment.id %>"
+                                                                                                               class="btn btn-outline-primary"
+                                                                                                               style="border-radius: 200px;">View
+                                                                                                                More
+                                                                                                                Replies</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            <% } %>
+                                                                                        </div>
+                                                                                    </div>
+
+
+                                                                                </div>
+                                                                            <% } %>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+    function attemptANestedComment(parent_id) {
+        const replyButton = $("#childReplyToggleButton-" + parent_id);
+        const replyForm = $("#child-reply-inputForm-" + parent_id);
+
+        if (replyButton.html().includes("Reply")) {
+            replyForm.show();
+            replyButton.html("Cancel");
+            replyButton.addClass('btn-outline-danger').removeClass('btn-outline-dark');
+        } else {
+            replyForm.hide();
+            replyButton.html("Reply");
+            replyButton.addClass('btn-outline-dark').removeClass('btn-outline-danger');
+        }
+    }
+
+    function sendANestedComment(parent_id) {
+        event.preventDefault();
+
+        const messageTextarea = $("#childReplyMessage-" + parent_id); // Textarea
+        const sendButton = $("#child-reply-send-button-" + parent_id); // Button
+
+        sendButton.prop('disabled', true);
+
+        const messageValue = messageTextarea.val();
+
+        $.post(`/comment/reply/<%= post.id %>/${parent_id}`,
+            {
+                parent_id: parent_id,
+                messageValue: messageValue
+            },
+            function (data, httpStatus) {
+                const status = data.status;
+                const msg = data.msg;
+                const comment = data.comment;
+
+                if (status !== undefined && status === 1) {
+                    if (comment === undefined) {
+                        window.location.href = "/error/500";
+                    } else {
+                        window.location.href = "/comment/show/<%= comment.id %>";
+                    }
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+                    errorMessage.fadeOut(5000)
+
+                    sendButton.prop('disabled', false);
+                }
+            });
+    }
+
+    function attemptToDelete(comment_id) {
+        event.preventDefault();
+
+        swal({
+            title: "Are you sure?",
+            text: "You are deleting this comment. Once deleted, you will not be able to recover it!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.post("/comment/delete/" + comment_id,
+                        {
+                            comment_id: comment_id,
+                        },
+                        function (data, httpStatus) {
+                            const status = data.status;
+                            const msg = data.msg;
+
+                            if (status !== undefined && status === 1) {
+                                swal("This comment is now deleted.", {
+                                    icon: "success",
+                                })
+                                    .then(() => {
+                                        window.location.href = "/comment/show/<%= comment.id %>";
+                                    })
+                            } else {
+                                let errorMessage = $("#errorMessage");
+                                errorMessage.html(msg);
+                                errorMessage.show();
+
+                                errorMessage.fadeOut(5000)
+                            }
+                        });
+                }
+            });
+    }
+
+    function attemptToEdit(comment_id) {
+        event.preventDefault();
+
+        const editButton = $("#childCommentEditToggleButton-" + comment_id);
+        const editForm = $("#child-comment-update-inputForm-" + comment_id);
+
+        if (editButton.html().includes("Edit")) {
+            editForm.show();
+            editButton.html("Cancel");
+            editButton.addClass('btn-outline-danger').removeClass('btn-outline-dark');
+        } else {
+            editForm.hide();
+            editButton.html("Edit");
+            editButton.addClass('btn-outline-dark').removeClass('btn-outline-danger');
+        }
+    }
+
+    function updateComment(comment_id) {
+        event.preventDefault();
+
+        const messageTextarea = $("#childCommentUpdateMessage-" + comment_id); // Textarea
+        const updateButton = $("#child-comment-update-button-" + comment_id); // Button
+
+        updateButton.prop('disabled', true);
+
+        const messageValue = messageTextarea.val();
+
+        $.post("/comment/edit/" + comment_id,
+            {
+                comment_id: comment_id,
+                messageValue: messageValue
+            },
+            function (data, httpStatus) {
+                const status = data.status;
+                const msg = data.msg;
+                const comment = data.comment;
+
+                if (status !== undefined && status === 1) {
+                    if (comment === undefined) {
+                        window.location.href = "/error/500";
+                    } else {
+                        window.location.href = "/comment/show/<%= comment.id %>";
+                    }
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+                    errorMessage.fadeOut(5000)
+
+                    updateButton.prop('disabled', false);
+                }
+            });
+    }
+</script>
+</body>
+</html>

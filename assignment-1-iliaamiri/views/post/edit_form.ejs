@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>New Post</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+
+    <form class="row d-flex justify-content-center">
+        <div class="col-md-7">
+            <div class="invalid-feedback" id="errorMessage">
+                Invalid inputs!
+            </div>
+            <div class="form-group">
+                <label for="inputLink">Link</label>
+                <input type="text" class="form-control" id="inputLink" placeholder="Link" value="<%=post.link%>">
+            </div>
+            <div class="form-row row">
+                <div class="form-group col-md-7">
+                    <label for="inputTitle">Title</label>
+                    <input type="text" class="form-control" id="inputTitle" placeholder="Choose a title" value="<%=post.title%>">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputSub">Existing Subs</label>
+                    <select id="inputSub" class="form-control">
+                        <option selected>Choose...</option>
+                        <% for (let availableSub of allSubs) { %>
+                        <option <%= (post.subgroup === availableSub) ? "selected" : "" %>><%=availableSub%></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="inputNewSub">New Sub</label>
+                    <input type="text" class="form-control" id="inputNewSub" placeholder="Create a new Sub">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="textareaInputDescription">Description</label>
+                <textarea class="form-control" id="textareaInputDescription" rows="4"><%=post.description%></textarea>
+            </div>
+            <button type="submit" id="buttonUpdatePost" class="btn btn-lg btn-primary mt-2">Done</button>
+            <a href="/posts/show/<%=post.id%>" class="btn btn-outline-secondary btn-lg mt-2" style="margin-left: 10px">Cancel</a>
+        </div>
+    </form>
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+<script>
+    $("#buttonUpdatePost").click(function() {
+        event.preventDefault();
+
+        const thisButton = $("#buttonPost");
+
+        thisButton.prop('disabled', true);
+
+        const inputLink = $("#inputLink").val();
+        const inputTitle = $("#inputTitle").val();
+        const inputSub = $("#inputSub").find(":selected").text();
+        const inputNewSub = $("#inputNewSub").val();
+        const textareaInputDescription = $("#textareaInputDescription").val();
+
+        let finalInputSub = inputSub;
+        if (inputNewSub.length > 0) {
+            finalInputSub = inputNewSub;
+        }
+
+        $.post("/posts/edit/<%=post.id%>",
+            {
+                inputLink: inputLink,
+                inputTitle: inputTitle,
+                textareaInputDescription: textareaInputDescription,
+                finalInputSub: finalInputSub,
+            },
+            function(data, httpStatus){
+                const status = data.status;
+                const msg = data.msg;
+
+                if (status !== undefined && status === 1) {
+                    console.log("AYO? ");
+                    window.location.href = "/posts/show/<%=post.id%>";
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+
+                    thisButton.prop('disabled', false);
+                }
+            });
+    });
+
+</script>
+</body>
+</html>

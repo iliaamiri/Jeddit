@@ -1,0 +1,50 @@
+module.exports = comments = {
+    9001: {
+        id: 9001,
+        post_id: 102,
+        parent_id: 0,
+        creator: 1,
+        description: "Actually I learned a lot :pepega:",
+        timestamp: 1642691742010,
+    },
+    9002: {
+        id: 9002,
+        post_id: 101,
+        parent_id: 0,
+        creator: 3,
+        description: "Actually I learned a lot :pepega:",
+        timestamp: 1642791842010,
+    },
+    9003: {
+        id: 9003,
+        post_id: 101,
+        parent_id: 9002,
+        creator: 2,
+        description: "Nah this isn't good 2222222222222 :pepega:",
+        timestamp: 1642691742010,
+    },
+    9004: {
+        id: 9004,
+        post_id: 101,
+        parent_id: 9002,
+        creator: 2,
+        description: "Nah this isn't good :pepega:",
+        timestamp: 1642691742010,
+    },
+    9005: {
+        id: 9005,
+        post_id: 101,
+        parent_id: 9002,
+        creator: 1,
+        description: "AYYOOOOOOOOOO:pepega:",
+        timestamp: 1642691742010,
+    },
+    9006: {
+        id: 9006,
+        post_id: 101,
+        parent_id: 0,
+        creator: 1,
+        description: "AAHAHAHAH OK OK :pepega:",
+        timestamp: 1642691742010,
+    }
+}

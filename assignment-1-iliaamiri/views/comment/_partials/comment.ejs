@@ -1,0 +1,77 @@
+<div class="row mt-2">
+    <div class="col-md-3">
+        <span><i class="bi bi-person-circle"></i> <%= getUserById(comment.creator).uname %></span>
+    </div>
+    <div class="col-md-9 d-flex justify-content-end">
+        <%= new Date(comment.timestamp).toLocaleDateString() + " - at " + new Date(comment.timestamp).toLocaleTimeString() %>
+    </div>
+</div>
+<div class="row">
+    <div style="width: auto;padding-left: 20px">
+        <div class="d-flex" style="height: 100%;">
+            <div class="vr"></div>
+        </div>
+    </div>
+    <div class="col-md-11">
+        <%= comment.description %>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-1" style="padding-left: 20px">
+        <div class="d-flex" style="height: 100%;">
+            <div class="vr"></div>
+        </div>
+    </div>
+    <div class="col-md-11">
+        <% if(user) { %>
+            <% if (!isLast) { %>
+            <a class="btn btn-outline-dark mt-2 mb-1"
+               onclick="attemptANestedComment(<%= comment.id %>)"
+               id="childReplyToggleButton-<%= comment.id %>">Reply</a>
+            <% } %>
+        <% } else { %>
+            <a href="/user/login"
+               class="btn btn-outline-dark mt-2 mb-1">Reply</a>
+        <% } %>
+
+        <% if (user && user.id === comment.creator) { %>
+            <a href="#"
+               class="btn btn-outline-secondary mt-2 mb-1"
+               onclick="attemptToEdit(<%= comment.id %>)" id="childCommentEditToggleButton-<%= comment.id %>">Edit</a>
+
+            <div class="input-group mb-2"
+                 id="child-comment-update-inputForm-<%= comment.id %>"
+                 style="display: none">
+                                                    <textarea class="form-control" placeholder=""
+                                                              aria-describedby="child-comment-update-button-<%= comment.id %>"
+                                                              id="childCommentUpdateMessage-<%= comment.id %>"><%= comment.description %></textarea>
+                <button class="btn btn-outline-secondary" type="button"
+                        onclick="updateComment(<%= comment.id %>)"
+                        id="child-comment-update-button-<%= comment.id %>">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+
+
+            <a href="#"
+               class="btn btn-outline-danger mt-2 mb-1"
+               id="comment-delete-<%= comment.id %>"
+               onclick="attemptToDelete(<%= comment.id %>)">Delete</a>
+        <% } %>
+
+        <a href="/comment/show/<%= comment.id %>">Go to this thread</a>
+        <div class="input-group mb-2"
+             id="child-reply-inputForm-<%= comment.id %>"
+             style="display: none">
+                                            <textarea class="form-control" placeholder=""
+                                                      aria-describedby="child-reply-send-button-<%= comment.id %>"
+                                                      id="childReplyMessage-<%= comment.id %>"></textarea>
+            <button class="btn btn-outline-secondary" type="button"
+                    onclick="sendANestedComment(<%= comment.id %>)"
+                    id="child-reply-send-button-<%= comment.id %>"><i
+                        class="bi bi-send"></i>
+            </button>
+        </div>
+
+    </div>
+</div>

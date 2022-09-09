@@ -1,0 +1,47 @@
+a {
+    color: #00B4D8;
+}
+
+a:hover {
+    color: #0077B6;
+}
+
+
+.center-block {
+    display: block;
+    margin: auto;
+}
+
+.post-container {
+    border: 1px solid #CCCCCC;
+    border-radius: 7px
+}
+
+
+.header-nav-bar {
+    background: #F3F5F6;
+    border: 1px solid #00A8E0;
+    padding-inline: 70px;
+    border-radius: 10px;
+}
+
+footer {
+    background: #E7EBEE;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+
+.comment-container-box {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    padding-bottom: 25px;
+}
+
+.post-comment-container-box {
+    padding: 10px 10px 10px 20px;
+}
+
+.offset-for-nested-comments {
+    width: auto;
+    padding-left: 20px;
+}

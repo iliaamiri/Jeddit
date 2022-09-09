@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jeddit - Subs</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+
+    <% for (let sub of Object.values(allSubs)) { %>
+    <div class="row mb-3 mt-1 d-flex justify-content-center">
+        <div class="col-md-7 post-container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row" style="text-align: center">
+                        <h4>Posts: <%=sub.number_of_posts%></h4>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <h3><a href="/subs/<%=sub.sub_name%>">j/<%=sub.sub_name%></a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <% } %>
+
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+</body>
+</html>

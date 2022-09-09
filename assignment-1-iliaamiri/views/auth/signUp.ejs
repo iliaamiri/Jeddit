@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs') -%>
+
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-8 col-lg-4 col-sm-12">
+        <h3 class="display-6">Sign Up</h3>
+            <form>
+                <div class="form-group  has-error">
+                    <label for="inputUsername">Username</label>
+                    <input type="text" class="form-control" id="inputUsername" placeholder="Enter username" autocomplete="off">
+                    <div class="invalid-feedback" id="errorMessage">
+                        Username exists
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password" aria-describedby="passwordHelp">
+                    <small id="emailHelp" class="form-text text-muted" aria-describedby="passwordHelp" >We'll never store or share your raw password. You shouldn't either.</small>
+                </div>
+                <button type="submit" id="submitButton" class="mt-2 btn btn-primary">Sign Up</button>
+                <div class="form-group mt-3 ">
+                    already have an account? <a href="/user/login">sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="/js/signup.js"></script>
+</body>
+</html>

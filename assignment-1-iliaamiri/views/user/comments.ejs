@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= requestedUser.uname %>'s Comments</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-8 col-lg-8 col-sm-12">
+            <h3 class="display-6"><a href="/users/<%= requestedUser.id %>">Profile</a> > Comments from <%= requestedUser.uname %></h3>
+            <hr>
+        </div>
+    </div>
+
+
+    <div class="row mb-3 mt-1 post-container">
+
+
+        <hr>
+        <% if (!user) { %>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <h3 class="display-6">Login or Sign up to leave a comment</h3>
+                </div>
+                <div class="col-md-4">
+                    <a href="/user/login" class="btn btn-primary">Login</a>
+                    <a href="/user/sign-up" class="btn btn-outline-primary">Sign up</a>
+                </div>
+            </div>
+            <hr>
+        <% } %>
+
+        <!-- Alert Box -->
+        <div class="alert alert-danger" role="alert" id="errorMessage" style="display: none">
+            This is a primary alert—check it out!
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12" style="border: 1px solid #CCCCCC; border-radius: 5px">
+                <% for (let comment of allUserComments) { %>
+                    <div class="row mb-4">
+                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment, isLast: true}) -%>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+    function attemptToDelete(comment_id) {
+        event.preventDefault();
+
+        swal({
+            title: "Are you sure?",
+            text: "You are deleting this comment. Once deleted, you will not be able to recover it!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.post("/comment/delete/" + comment_id,
+                        {
+                            comment_id: comment_id,
+                        },
+                        function (data, httpStatus) {
+                            const status = data.status;
+                            const msg = data.msg;
+
+                            if (status !== undefined && status === 1) {
+                                swal("This comment is now deleted.", {
+                                    icon: "success",
+                                })
+                                    .then(() => {
+                                        window.location.href = "/users/<%=requestedUser.id%>/comments/list";
+                                    })
+                            } else {
+                                let errorMessage = $("#errorMessage");
+                                errorMessage.html(msg);
+                                errorMessage.show();
+
+                                errorMessage.fadeOut(5000)
+                            }
+                        });
+                }
+            });
+    }
+
+    function attemptToEdit(comment_id) {
+        event.preventDefault();
+
+        const editButton = $("#childCommentEditToggleButton-" + comment_id);
+        const editForm = $("#child-comment-update-inputForm-" + comment_id);
+
+        if (editButton.html().includes("Edit")) {
+            editForm.show();
+            editButton.html("Cancel");
+            editButton.addClass('btn-outline-danger').removeClass('btn-outline-dark');
+        } else {
+            editForm.hide();
+            editButton.html("Edit");
+            editButton.addClass('btn-outline-dark').removeClass('btn-outline-danger');
+        }
+    }
+
+    function updateComment(comment_id) {
+        event.preventDefault();
+
+        const messageTextarea = $("#childCommentUpdateMessage-" + comment_id); // Textarea
+        const updateButton = $("#child-comment-update-button-" + comment_id); // Button
+
+        updateButton.prop('disabled', true);
+
+        const messageValue = messageTextarea.val();
+
+        $.post("/comment/edit/" + comment_id,
+            {
+                comment_id: comment_id,
+                messageValue: messageValue
+            },
+            function (data, httpStatus) {
+                const status = data.status;
+                const msg = data.msg;
+                const comment = data.comment;
+
+                if (status !== undefined && status === 1) {
+                    if (comment === undefined) {
+                        window.location.href = "/error/500";
+                    } else {
+                        window.location.href = "/users/<%=requestedUser.id%>/comments/list";
+                    }
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+                    errorMessage.fadeOut(5000)
+
+                    updateButton.prop('disabled', false);
+                }
+            });
+    }
+</script>
+
+</body>
+</html>

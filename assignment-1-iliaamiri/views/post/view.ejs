@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Post <%= post.id %></title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+    <div class="row mb-3 mt-1 post-container">
+        <div class="row">
+            <div class="col-md-1">
+                <% if (user) { %>
+                <input type="hidden" value="<%=post.user_vote%>" id="currentVoteValue-<%=post.id%>">
+                <div class="row">
+                    <a id="upVoteButton-<%=post.id%>" onclick="vote('up', <%=user.id%>, <%=post.id%>)" class="btn" style="color: green"><i id="upVoteIcon-<%=post.id%>" class="bi bi-caret-up-square<%=(post.user_vote === 1) ? "-fill" : ""%>"></i></a>
+                </div>
+                <div class="row" style="text-align: center">
+                    <h4 id="postNetVotes-<%=post.id%>"><%= post.votes.reduce((net, vote) => net + vote.value, 0) %></h4>
+                </div>
+                <div class="row">
+                    <a id="downVoteButton-<%=post.id%>" onclick="vote('down', <%=user.id%>, <%=post.id%>)" class="btn" style="color: red "><i id="downVoteIcon-<%=post.id%>" class="bi bi-caret-down-square<%=(post.user_vote === -1) ? "-fill" : ""%>"></i></a>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="col-md-11">
+                <div class="row">
+                    <div class="col-md-2">
+                        <h3>j/<a href="/subs/<%= post.subgroup %>"><%= post.subgroup %></a></h3>
+                    </div>
+                    <div class="col-md-10 d-flex justify-content-end">
+                        <% if (user && user.id === post.creator.id) { %>
+                            <h6 class="mt-2 d-inline">By: You </h6>
+                            <a href="/posts/edit/<%= post.id %>" class="btn btn-outline-secondary"
+                               style="margin: auto 10px auto 10px"> Edit</a>
+                            <a href="/posts/delete/<%= post.id %>" class="btn btn-outline-danger"
+                               style="margin: auto 10px auto 10px">Delete</a>
+                        <% } else { %>
+                            <h6 class="mt-2 d-inline">By: <a href="/users/<%= post.creator.id %>"><%= post.creator.uname %></a></h6>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="row">
+                    <a href="/posts/show/<%= post.id %>">
+                        <h2><%= post.title %></h2>
+                    </a>
+                    <p>
+                        <%= post.description %>
+                    </p>
+                </div>
+                <div class="row">
+                    <a href="<%= post.link %>" class="mb-2" style="font-size: 13px"><%= post.link %></a>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <% if (!user) { %>
+            <div class="row d-flex justify-content-center align-items-center">
+                <div class="col-md-6">
+                    <h3 class="display-6">Login or Sign up to leave a comment</h3>
+                </div>
+                <div class="col-md-4">
+                    <a href="/user/login" class="btn btn-primary">Login</a>
+                    <a href="/user/signup" class="btn btn-outline-primary">Sign up</a>
+                </div>
+            </div>
+            <hr>
+        <% } else { %>
+            <div class="row d-flex align-items-center">
+                <div class="col-md-12">
+                    <h5>Leave a Comment:</h5>
+                    <form class="navbar-form navbar-left">
+                        <div class="input-group mb-3">
+                            <textarea class="form-control" placeholder=""
+                                      aria-label="Comment"
+                                      aria-describedby="child-reply-send-button-0" id="childReplyMessage-0"></textarea>
+                            <button class="btn btn-outline-secondary" type="button" id="child-reply-send-button-0"
+                                    onclick="sendANestedComment(0)"><i
+                                        class="bi bi-send"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
+        <% } %>
+
+        <!-- Alert Box -->
+        <div class="alert alert-danger" role="alert" id="errorMessage" style="display: none">
+            This is a primary alert—check it out!
+        </div>
+
+
+        <div class="row post-comment-container-box">
+            <div class="col-md-12 comment-container-box">
+                <!-- Parent Comment (1st Node) -->
+                <% for(let comment of post.comments) { %>
+                    <div class="row">
+                        <% comment.creator = comment.creator.id %>
+                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment, isLast: false}) -%>
+
+                        <!-- Children of Root Comment (2nd node) -->
+                        <div class="row">
+                            <div class="offset-for-nested-comments">
+                                <div class="d-flex" style="height: 100%;">
+                                    <div class="vr"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-11">
+                                <% for (let childComment of getChildrenOfComment(comment.id)) { %>
+                                    <div class="row">
+                                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: childComment, isLast: false}) -%>
+
+                                        <div class="row">
+                                            <div class="offset-for-nested-comments">
+                                                <div class="d-flex" style="height: 100%;">
+                                                    <div class="vr"></div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-11">
+                                                <!-- Children of Level 1 Nest (3rd node) -->
+                                                <% for (let grandChildComment of getChildrenOfComment(childComment.id)) { %>
+                                                    <div class="row">
+                                                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandChildComment, isLast: false}) -%>
+
+                                                        <div class="row">
+                                                            <div class="offset-for-nested-comments">
+                                                                <div class="d-flex" style="height: 100%;">
+                                                                    <div class="vr"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-11">
+                                                                <% for (let grandGrandChildComment of getChildrenOfComment(grandChildComment.id)) { %>
+                                                                    <div class="row">
+                                                                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandGrandChildComment, isLast: false}) -%>
+
+                                                                        <div class="row">
+                                                                            <div class="offset-for-nested-comments">
+                                                                                <div class="d-flex" style="height: 100%;">
+                                                                                    <div class="vr"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-md-11">
+                                                                                <% for (let grandGrandGrandChildComment of getChildrenOfComment(grandGrandChildComment.id)) { %>
+                                                                                    <div class="row">
+                                                                                        <%- include('../comment/_partials/comment.ejs', {user, getUserById, comment: grandGrandGrandChildComment, isLast: true}) -%>
+
+
+                                                                                        <div class="row d-flex justify-content-end">
+                                                                                            <div class="col-md-10">
+                                                                                                <a href="/comment/show/<%= grandGrandGrandChildComment.id %>" class="btn btn-outline-primary"
+                                                                                                   style="border-radius: 200px; width: 50%">View More
+                                                                                                    Replies</a>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                <% } %>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                <% } %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+<script src="/js/vote.js"></script>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script>
+
+    function attemptANestedComment(parent_id) {
+        const replyButton = $("#childReplyToggleButton-" + parent_id);
+        const replyForm = $("#child-reply-inputForm-" + parent_id);
+
+        if (replyButton.html().includes("Reply")) {
+            replyForm.show();
+            replyButton.html("Cancel");
+            replyButton.addClass('btn-outline-danger').removeClass('btn-outline-dark');
+        } else {
+            replyForm.hide();
+            replyButton.html("Reply");
+            replyButton.addClass('btn-outline-dark').removeClass('btn-outline-danger');
+        }
+    }
+
+    function sendANestedComment(parent_id) {
+        event.preventDefault();
+
+        const messageTextarea = $("#childReplyMessage-" + parent_id); // Textarea
+        const sendButton = $("#child-reply-send-button-" + parent_id); // Button
+
+        sendButton.prop('disabled', true);
+
+        const messageValue = messageTextarea.val();
+
+        $.post(`/comment/reply/<%= post.id %>/${parent_id}`,
+            {
+                parent_id: parent_id,
+                messageValue: messageValue
+            },
+            function (data, httpStatus) {
+                const status = data.status;
+                const msg = data.msg;
+                const comment = data.comment;
+
+                if (status !== undefined && status === 1) {
+                    if (comment === undefined) {
+                        window.location.href = "/error/500";
+                    } else {
+                        window.location.href = "/posts/show/<%= post.id %>";
+                    }
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+                    errorMessage.fadeOut(5000)
+
+                    sendButton.prop('disabled', false);
+                }
+            });
+    }
+
+    function attemptToDelete(comment_id) {
+        event.preventDefault();
+
+        swal({
+            title: "Are you sure?",
+            text: "You are deleting this comment. Once deleted, you will not be able to recover it!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    $.post("/comment/delete/" + comment_id,
+                        {
+                            comment_id: comment_id,
+                        },
+                        function (data, httpStatus) {
+                            const status = data.status;
+                            const msg = data.msg;
+
+                            if (status !== undefined && status === 1) {
+                                swal("This comment is now deleted.", {
+                                    icon: "success",
+                                })
+                                    .then(() => {
+                                        window.location.href = "/posts/show/<%= post.id %>";
+                                    })
+                            } else {
+                                let errorMessage = $("#errorMessage");
+                                errorMessage.html(msg);
+                                errorMessage.show();
+
+                                errorMessage.fadeOut(5000)
+                            }
+                        });
+                }
+            });
+    }
+
+    function attemptToEdit(comment_id) {
+        event.preventDefault();
+
+        const editButton = $("#childCommentEditToggleButton-" + comment_id);
+        const editForm = $("#child-comment-update-inputForm-" + comment_id);
+
+        if (editButton.html().includes("Edit")) {
+            editForm.show();
+            editButton.html("Cancel");
+            editButton.addClass('btn-outline-danger').removeClass('btn-outline-dark');
+        } else {
+            editForm.hide();
+            editButton.html("Edit");
+            editButton.addClass('btn-outline-dark').removeClass('btn-outline-danger');
+        }
+    }
+
+    function updateComment(comment_id) {
+        event.preventDefault();
+
+        const messageTextarea = $("#childCommentUpdateMessage-" + comment_id); // Textarea
+        const updateButton = $("#child-comment-update-button-" + comment_id); // Button
+
+        updateButton.prop('disabled', true);
+
+        const messageValue = messageTextarea.val();
+
+        $.post("/comment/edit/" + comment_id,
+            {
+                comment_id: comment_id,
+                messageValue: messageValue
+            },
+            function (data, httpStatus) {
+                const status = data.status;
+                const msg = data.msg;
+                const comment = data.comment;
+
+                if (status !== undefined && status === 1) {
+                    if (comment === undefined) {
+                        window.location.href = "/error/500";
+                    } else {
+                        window.location.href = "/posts/show/<%= post.id %>";
+                    }
+                } else {
+                    let errorMessage = $("#errorMessage");
+                    errorMessage.html(msg);
+                    errorMessage.show();
+                    errorMessage.fadeOut(5000)
+
+                    updateButton.prop('disabled', false);
+                }
+            });
+    }
+</script>
+</body>
+</html>

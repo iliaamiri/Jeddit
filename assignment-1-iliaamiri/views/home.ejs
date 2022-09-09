@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Jeddit</title>
+
+    <%- include('_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('_partials/header.ejs', {user: user}) -%>
+
+    <%- include('post/_partials/post_orders_select.ejs') -%>
+
+    <% for (let post of posts) { %>
+        <%- include('post/_partials/post.ejs', {user, post }) -%>
+    <% } %>
+
+
+</div>
+
+<%- include('_partials/footer.ejs') -%>
+
+<%- include('_partials/commonJsScripts.ejs') -%>
+
+<script src="/js/vote.js"></script>
+<script src="/js/utils.js"></script>
+
+<script>
+    $('#orderSelection').on('change', function() { reloadWithQueryStringVars({ post_orders: this.value }) });
+</script>
+
+</body>
+</html>

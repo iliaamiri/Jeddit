@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= requestedUser.uname %>'s Posts</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+
+    <div class="container d-flex justify-content-center">
+        <div class="col-md-8 col-lg-8 col-sm-12">
+            <h3 class="display-6"><a href="/users/<%= requestedUser.id %>">Profile</a> > Posts of <%= requestedUser.uname %></h3>
+            <hr>
+        </div>
+    </div>
+
+    <%- include('../post/_partials/post_orders_select.ejs') -%>
+
+
+    <% for (let post of allUserPosts) { %>
+        <%- include('../post/_partials/post.ejs', {user, post }) -%>
+    <% } %>
+
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+
+<script src="/js/utils.js"></script>
+<script src="/js/vote.js"></script>
+
+<script>
+    $('#orderSelection').on('change', function() { reloadWithQueryStringVars({ post_orders: this.value }) });
+</script>
+</body>
+</html>

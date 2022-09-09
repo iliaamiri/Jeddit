@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>404 - Not Found</title>
+
+    <%- include('../_partials/commonCssHeaders.ejs') -%>
+</head>
+<body>
+<div class="container">
+    <%- include('../_partials/header.ejs', {user: user}) -%>
+
+    <div class="row d-flex justify-content-center mt-5">
+        <div class="col-md-8">
+            <h1 class="display-1"><u>404</u></h1>
+            <h2 class="display-3">You seem to be lost.. 🤔</h2>
+            <p>The page you were looking for does not exist.</p>
+        </div>
+    </div>
+
+</div>
+
+<%- include('../_partials/footer.ejs') -%>
+
+<%- include('../_partials/commonJsScripts.ejs') -%>
+</body>
+</html>

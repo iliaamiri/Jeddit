@@ -1,0 +1,45 @@
+<div class="row mb-3 mt-1 post-container">
+    <div class="col-md-1">
+        <% if (user) { %>
+        <input type="hidden" value="<%=post.user_vote%>" id="currentVoteValue-<%=post.id%>">
+        <div class="row">
+            <a id="upVoteButton-<%=post.id%>" onclick="vote('up', <%=user.id%>, <%=post.id%>)" class="btn" style="color: green"><i id="upVoteIcon-<%=post.id%>" class="bi bi-caret-up-square<%=(post.user_vote === 1) ? "-fill" : ""%>"></i></a>
+        </div>
+        <div class="row" style="text-align: center">
+            <h4 id="postNetVotes-<%=post.id%>"><%= post.votes.reduce((net, vote) => net + vote.value, 0) %></h4>
+        </div>
+        <div class="row">
+            <a id="downVoteButton-<%=post.id%>" onclick="vote('down', <%=user.id%>, <%=post.id%>)" class="btn" style="color: red "><i id="downVoteIcon-<%=post.id%>" class="bi bi-caret-down-square<%=(post.user_vote === -1) ? "-fill" : ""%>"></i></a>
+        </div>
+        <% } %>
+    </div>
+
+    <div class="col-md-11">
+        <div class="row">
+            <div class="col-md-2">
+                <h3>j/<a href="/subs/<%= post.subgroup %>"><%= post.subgroup %></a></h3>
+            </div>
+            <div class="col-md-10 d-flex justify-content-end">
+                <% if (user && user.id === post.creator.id) { %>
+                    <h6 class="mt-2 d-inline">By: You </h6>
+                    <a href="/posts/edit/<%= post.id %>" class="btn btn-outline-secondary" style="margin: auto 10px auto 10px"> Edit</a>
+                    <a href="/posts/delete/<%= post.id %>" class="btn btn-outline-danger" style="margin: auto 10px auto 10px">Delete</a>
+                <% } else { %>
+                    <h6 class="mt-2 d-inline">By: <a href="/users/<%= post.creator.id %>"><%= post.creator.uname %></a></h6>
+                <% } %>
+            </div>
+        </div>
+        <div class="row">
+            <a href="/posts/show/<%= post.id %>">
+                <h2><%= post.title %></h2>
+            </a>
+            <p>
+                <%= post.description %>
+            </p>
+        </div>
+        <div class="row">
+            <a href="<%= post.link %>" class="mb-2" style="font-size: 13px"><%= post.link %></a>
+        </div>
+    </div>
+
+</div>
