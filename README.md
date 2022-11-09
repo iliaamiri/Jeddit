@@ -5,6 +5,6 @@ Clone of Reddit 🤡 - BCIT Assignment
 ```bash
 git clone https://github.com/iliaamiri/Jeddit.git
 cd src
-npm i
-npm run dev
+bun i
+bun run dev
 ```
